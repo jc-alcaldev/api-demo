@@ -35,9 +35,21 @@ app.get('/users', (req, res) => {
 
 // Vamos a agregar un nuevo end point en un nueva rama y y que devuelva el mensaje
 
-app.get('/gretting', (req, res) => {
+app.get('/greeting', (req, res) => {
   res.json({ message: "Hola desde el endpoint /greeting"});
 });
+
+// Vamos a contar los usuarios en la db
+app.get('/users/count', (req, res) => {
+  db.get("SELECT COUNT(*) as total FROM users", [], (err, row) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ totalUsers: row.total });
+  });
+});
+
 
 app.listen(port, () => {                          //Aqui arrancamos el servidor
   console.log(`Servidor corriendo en http://localhost:${port}`);
