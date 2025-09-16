@@ -1,15 +1,15 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const express = require('express');               //express: framework para montar el servidor web
+const sqlite3 = require('sqlite3').verbose();     // para manejar las db sqlite3   .verbose() da mensajes claros si hay errores
 
 const app = express();
 const port = 3000;
 
-// Base de datos en memoria
+// Base de datos en memoria, no en un archivo, por lo que se borra cuando cierra el servidor
 const db = new sqlite3.Database(':memory:');
 
 // Crear tabla y añadir datos
 db.serialize(() => {
-  db.run("CREATE TABLE users (id INT, name TEXT)");
+  db.run("CREATE TABLE users (id INT, name TEXT)");  // tabala con dos columnas |id|name|
 
   const stmt = db.prepare("INSERT INTO users VALUES (?, ?)");
   stmt.run(1, "Juan Carlos");
@@ -33,7 +33,13 @@ app.get('/users', (req, res) => {
   });
 });
 
-app.listen(port, () => {
+// Vamos a agregar un nuevo end point en un nueva rama y y que devuelva el mensaje
+
+app.get('/gretting', (req, res) => {
+  res.json({ message: "Hola desde el endpoint /greeting"});
+});
+
+app.listen(port, () => {                          //Aqui arrancamos el servidor
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
 
